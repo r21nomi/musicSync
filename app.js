@@ -85,6 +85,10 @@ namespace.on('connection',function(socket) {
   socket.on('disconnect', function() {
     console.log('disconnected!');
   });
+
+  socket.on('musicsync', function(state) {
+    namespace.emit('musicsync', state);
+  });
 });
 
 module.exports = app;
