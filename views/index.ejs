@@ -7,55 +7,56 @@
   </head>
   <body id="body">
     <div id="main"></div>
+    <a id="btn" href="javascript:void(0)">BTN</a>
+    <br>
+    <br>
+    <audio id="audio" controls>
+        <source src="./audio/sample.mp3" type="audio/mp3">
+        このWebブラウザーは音声の再生に対応していません。
+    </audio>
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
-      var socket = io.connect('http://myonlyherokuapp.herokuapp.com/'),
-      // var socket   = io.connect('http://localhost:3000/'),
-          s        = socket.of('/socket'),
+      var path     = (location.hostname.match('localhost')) ? 'http://localhost:3000/' : 'http://myonlyherokuapp.herokuapp.com/',
+          socket   = null,
+          s        = null,
           mainElem = document.getElementById('main'),
+          audio    = document.getElementById('audio'),
           clickEvt = window.ontouchend === null ? 'touchend' : 'click';
 
+        socket = io.connect(path);
+        s      = socket.of('/socket');
+
       s.on('connect', function(msg) {
-        console.log('connected');
+          console.log('connected');
       });
 
       s.on('add', function(obj) {
-        addElem(obj);
+        console.log(obj);
+      });
+
+      s.on('msync', function(state) {
+          console.log('sync');
+          if (state === 'on') {
+            console.log('on');
+            audio.play();
+          }
       });
 
       window.addEventListener('resize', function() {
         resizeWindow();
       });
 
-      document.body.addEventListener(clickEvt, function(e) {
-        console.log(e);
-        var _point = {};
-        if (clickEvt === 'touchend') {
-          _point.x = e.changedTouches[0].screenX,
-          _point.y = e.changedTouches[0].screenY;
-        } else {
-          _point.x = e.clientX,
-          _point.y = e.clientY;
-        }
-        s.emit('add', _point);
-      });
+    document.getElementById('btn').addEventListener(clickEvt, function() {
+        console.log('btn tapped');
+        s.emit('msync', 'on');
+        s.emit('add', 'push on');
+    });
 
       function resizeWindow() {
         document.body.style.height = window.innerHeight + 'px';
       }
 
-      function addElem(obj) {
-        var _el = document.createElement('div');
-        _el.style.width           = 50 + 'px';
-        _el.style.height          = 50 + 'px';
-        _el.style.backgroundColor = 'rgba(' + Math.floor(Math.random()*255) + ', ' + Math.floor(Math.random()*255) + ', ' + Math.floor(Math.random()*255) + ', 1)';
-        _el.style.borderRadius    = '50px';
-        _el.style.position        = 'absolute';
-        _el.style.left            = obj.x + 'px';
-        _el.style.top             = obj.y + 'px';
-        mainElem.appendChild(_el);
-      }
       resizeWindow();
     </script>
   </body>

@@ -73,14 +73,20 @@ var namespace = io.of('/socket');
 
 namespace.on('connection',function(socket) {
   console.log('connected!!');
+
   socket.on('message', function(data) {
     var msg = sanitize(data.value).entityEncode();
     namespace.emit('message', {value: msg});
   });
 
-  socket.on('add', function(obj) {
-    namespace.emit('add', obj);
+  socket.on('msync', function(state) {
+    console.log(state);
+    namespace.emit('msync', state);
   });
+
+  // socket.on('add', function(obj) {
+  //   namespace.emit('add', obj);
+  // });
 
   socket.on('disconnect', function() {
     console.log('disconnected!');
