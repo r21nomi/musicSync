@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body id="body">
+    <div id="main"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect('http://myonlyherokuapp.herokuapp.com/'),
+      // var socket   = io.connect('http://localhost:3000/'),
+          s        = socket.of('/socket'),
+          mainElem = document.getElementById('main'),
+          clickEvt = window.ontouchend === null ? 'touchend' : 'click';
+
+      s.on('connect', function(msg) {
+        console.log('connected');
+      });
+
+      s.on('add', function(obj) {
+        addElem(obj);
+      });
+
+      window.addEventListener('resize', function() {
+        resizeWindow();
+      });
+
+      document.body.addEventListener(clickEvt, function(e) {
+        console.log(e);
+        var _point = {};
+        if (clickEvt === 'touchend') {
+          _point.x = e.changedTouches[0].screenX,
+          _point.y = e.changedTouches[0].screenY;
+        } else {
+          _point.x = e.clientX,
+          _point.y = e.clientY;
+        }
+        s.emit('add', _point);
+      });
+
+      function resizeWindow() {
+        document.body.style.height = window.innerHeight + 'px';
+      }
+
+      function addElem(obj) {
+        var _el = document.createElement('div');
+        _el.style.width           = 50 + 'px';
+        _el.style.height          = 50 + 'px';
+        _el.style.backgroundColor = 'rgba(' + Math.floor(Math.random()*255) + ', ' + Math.floor(Math.random()*255) + ', ' + Math.floor(Math.random()*255) + ', 1)';
+        _el.style.borderRadius    = '50px';
+        _el.style.position        = 'absolute';
+        _el.style.left            = obj.x + 'px';
+        _el.style.top             = obj.y + 'px';
+        mainElem.appendChild(_el);
+      }
+      resizeWindow();
+    </script>
+  </body>
+</html>
