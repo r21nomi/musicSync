@@ -69,17 +69,16 @@ app.use(function(err, req, res, next) {
 });
 
 var io = require('socket.io').listen(server);
-var namespace = io.of('/socket');
 
-namespace.on('connection',function(socket) {
+io.on('connection',function(socket) {
   console.log('connected!!');
   socket.on('message', function(data) {
     var msg = sanitize(data.value).entityEncode();
-    namespace.emit('message', {value: msg});
+    io.emit('message', {value: msg});
   });
 
   socket.on('add', function(obj) {
-    namespace.emit('add', obj);
+    io.emit('add', obj);
   });
 
   socket.on('disconnect', function() {
