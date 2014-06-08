@@ -11,47 +11,41 @@
     <br>
     <br>
     <audio id="audio" controls>
-        <source src="./audio/sample.mp3" type="audio/mp3">
-        このWebブラウザーは音声の再生に対応していません。
+      <source src="./audio/sample.mp3" type="audio/mp3">
+      このWebブラウザーは音声の再生に対応していません。
     </audio>
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
-      var path     = (location.hostname.match('localhost')) ? 'http://localhost:3000/' : 'http://myonlyherokuapp.herokuapp.com/',
+      var path     = (location.hostname.match('localhost')) ? 'http://localhost:3000/' : 'http://mymusicsync2.herokuapp.com/',
           socket   = null,
-          s        = null,
           mainElem = document.getElementById('main'),
           audio    = document.getElementById('audio'),
           clickEvt = window.ontouchend === null ? 'touchend' : 'click';
 
-        socket = io.connect(path);
-        s      = socket.of('/socket');
+      socket = io.connect(path);
+      // s      = socket.of('/socket');
 
-      s.on('connect', function(msg) {
-          console.log('connected');
+      socket.on('connect', function(msg) {
+        console.log('connected');
       });
 
-      s.on('add', function(obj) {
-        console.log(obj);
-      });
-
-      s.on('msync', function(state) {
-          console.log('sync');
-          if (state === 'on') {
-            console.log('on');
-            audio.play();
-          }
+      socket.on('msync', function(state) {
+        console.log('sync');
+        if (state === 'on') {
+          console.log('on');
+          audio.play();
+        }
       });
 
       window.addEventListener('resize', function() {
         resizeWindow();
       });
 
-    document.getElementById('btn').addEventListener(clickEvt, function() {
+      document.getElementById('btn').addEventListener(clickEvt, function() {
         console.log('btn tapped');
-        s.emit('msync', 'on');
-        s.emit('add', 'push on');
-    });
+        socket.emit('msync', 'on');
+      });
 
       function resizeWindow() {
         document.body.style.height = window.innerHeight + 'px';

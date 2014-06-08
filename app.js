@@ -39,9 +39,9 @@ app.use('/users', users);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 /// error handlers
@@ -49,45 +49,40 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
     });
+  });
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
 
 var io = require('socket.io').listen(server);
-var namespace = io.of('/socket');
+// var namespace = io.of('/socket');
 
-namespace.on('connection',function(socket) {
+io.on('connection',function(socket) {
   console.log('connected!!');
 
   socket.on('message', function(data) {
     var msg = sanitize(data.value).entityEncode();
-    namespace.emit('message', {value: msg});
+    io.emit('message', {value: msg});
   });
 
   socket.on('msync', function(state) {
     console.log(state);
-    console.log('state');
-    namespace.emit('msync', state);
+    io.emit('msync', state);
   });
-
-  // socket.on('add', function(obj) {
-  //   namespace.emit('add', obj);
-  // });
 
   socket.on('disconnect', function() {
     console.log('disconnected!');
