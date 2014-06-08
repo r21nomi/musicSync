@@ -81,13 +81,8 @@ namespace.on('connection',function(socket) {
 
   socket.on('msync', function(state) {
     console.log(state);
-    console.log('state');
     namespace.emit('msync', state);
   });
-
-  // socket.on('add', function(obj) {
-  //   namespace.emit('add', obj);
-  // });
 
   socket.on('disconnect', function() {
     console.log('disconnected!');
