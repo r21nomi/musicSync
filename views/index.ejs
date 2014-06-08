@@ -35,7 +35,7 @@
         console.log(obj);
       });
 
-      s.on('musicsync', function(state) {
+      s.on('msync', function(state) {
           console.log('sync');
           if (state === 'on') {
             console.log('on');
@@ -49,7 +49,7 @@
 
     document.getElementById('btn').addEventListener(clickEvt, function() {
         console.log('btn tapped');
-        s.emit('musicsync', 'on');
+        s.emit('msync', 'on');
         s.emit('add', 'push on');
     });
 
