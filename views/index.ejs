@@ -7,7 +7,8 @@
   </head>
   <body id="body">
     <div id="main"></div>
-    <a id="btn" href="javascript:void(0)">BTN</a>
+    <a id="btn-start" href="javascript:void(0)">START</a>
+    <a id="btn-stop" href="javascript:void(0)">STOP</a>
     <br>
     <br>
     <audio id="audio" controls>
@@ -17,7 +18,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
-      var path     = (location.hostname.match('localhost')) ? 'http://localhost:3000/' : 'http://mymusicsync2.herokuapp.com/',
+      var path     = (location.hostname.match('localhost')) ? 'http://localhost:3000/' : 'http://mymusicsync.herokuapp.com/',
           socket   = null,
           mainElem = document.getElementById('main'),
           audio    = document.getElementById('audio'),
@@ -35,6 +36,8 @@
         if (state === 'on') {
           console.log('on');
           audio.play();
+        } else if (state === 'off') {
+          audio.pause();
         }
       });
 
@@ -42,9 +45,12 @@
         resizeWindow();
       });
 
-      document.getElementById('btn').addEventListener(clickEvt, function() {
-        console.log('btn tapped');
+      document.getElementById('btn-start').addEventListener(clickEvt, function() {
         socket.emit('msync', 'on');
+      });
+
+      document.getElementById('btn-stop').addEventListener(clickEvt, function() {
+        socket.emit('msync', 'off');
       });
 
       function resizeWindow() {
