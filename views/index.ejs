@@ -9,6 +9,7 @@
     <div id="main"></div>
     <a id="btn-start" href="javascript:void(0)">START</a>
     <a id="btn-stop" href="javascript:void(0)">STOP</a>
+    <a id="btn-play" href="javascript:void(0)">PLAY</a>
     <br>
     <br>
     <audio id="audio" controls>
@@ -22,7 +23,8 @@
           socket   = null,
           mainElem = document.getElementById('main'),
           audio    = document.getElementById('audio'),
-          clickEvt = window.ontouchend === null ? 'touchend' : 'click';
+          clickEvt = window.ontouchend === null ? 'touchend' : 'click',
+          syncAble = true;
 
       socket = io.connect(path);
       // s      = socket.of('/socket');
@@ -35,11 +37,39 @@
         console.log('sync');
         if (state === 'on') {
           console.log('on');
+          audio.load();
           audio.play();
+          configVol();
+          //document.getElementById('btn-play').click();
         } else if (state === 'off') {
           audio.pause();
         }
       });
+
+      function configVol() {
+        var _vol      = 0,
+            _velocity = 0.025,
+            _dir      = 1;
+
+        syncAble = true;
+        changeVol(_vol, _velocity, _dir);
+      }
+
+      function changeVol(vol, velocity, dir) {
+        if (!syncAble) return;
+        setTimeout(function() {
+          console.log(vol, dir);
+          audio.volume = vol; 
+          var tempVol = vol + (velocity * dir);
+          if (tempVol < 0 || tempVol > 1) {
+            dir *= -1;
+            vol = tempVol + (velocity * dir);
+          } else {
+            vol = tempVol;
+          }
+          changeVol(vol, velocity, dir);
+        }, 100);
+      }
 
       window.addEventListener('resize', function() {
         resizeWindow();
@@ -51,6 +81,17 @@
 
       document.getElementById('btn-stop').addEventListener(clickEvt, function() {
         socket.emit('msync', 'off');
+      });
+
+      document.getElementById('btn-play').addEventListener(clickEvt, function() {
+        audio.load();
+        setTimeout(function() {
+          audio.play();
+        }, 1000);
+      });
+
+      audio.addEventListener('pause', function() {
+        syncAble = false;
       });
 
       function resizeWindow() {
