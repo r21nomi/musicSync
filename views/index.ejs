@@ -15,9 +15,6 @@
           mainElem = document.getElementById('main'),
           clickEvt = window.ontouchend === null ? 'touchend' : 'click';
 
-
-
-
       socket.on('connect', function(msg) {
         console.log('connected');
       });
