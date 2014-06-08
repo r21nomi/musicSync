@@ -17,14 +17,6 @@ app.set('port', process.env.PORT || 3000);
 //   debug('Express server listening on port ' + server.address().port);
 // });
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
-    res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-    next();
-});
-
 var server =  http.createServer(app);
 server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
@@ -77,16 +69,17 @@ app.use(function(err, req, res, next) {
 });
 
 var io = require('socket.io').listen(server);
+var namespace = io.of('/socket');
 
-io.on('connection',function(socket) {
+namespace.on('connection',function(socket) {
   console.log('connected!!');
   socket.on('message', function(data) {
     var msg = sanitize(data.value).entityEncode();
-    io.emit('message', {value: msg});
+    namespace.emit('message', {value: msg});
   });
 
   socket.on('add', function(obj) {
-    io.emit('add', obj);
+    namespace.emit('add', obj);
   });
 
   socket.on('disconnect', function() {

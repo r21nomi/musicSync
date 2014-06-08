@@ -10,16 +10,17 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
-      var socket = io.connect('http://myonlyherokuapp.herokuapp.com/'),
-//      var socket   = io.connect('http://localhost:3000/'),
+     // var socket = io.connect('http://myonlyherokuapp.herokuapp.com/'),
+      var socket   = io.connect('http://localhost:3000/'),
+          s        = socket.of('/socket'),
           mainElem = document.getElementById('main'),
           clickEvt = window.ontouchend === null ? 'touchend' : 'click';
 
-      socket.on('connect', function(msg) {
+      s.on('connect', function(msg) {
         console.log('connected');
       });
 
-      socket.on('add', function(obj) {
+      s.on('add', function(obj) {
         addElem(obj);
       });
 
@@ -37,7 +38,7 @@
           _point.x = e.clientX,
           _point.y = e.clientY;
         }
-        socket.emit('add', _point);
+        s.emit('add', _point);
       });
 
       function resizeWindow() {
