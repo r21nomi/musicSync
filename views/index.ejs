@@ -7,7 +7,7 @@
   </head>
   <body id="body">
     <div id="main"></div>
-    <a class="btn" href="javascript:void(0)">BTN</a>
+    <a id="btn" href="javascript:void(0)">BTN</a>
     <br>
     <br>
     <audio id="audio" controls>
@@ -19,7 +19,7 @@
     <script type="text/javascript">
       var path     = (location.hostname.match('localhost')) ? 'http://localhost:3000/' : 'http://myonlyherokuapp.herokuapp.com/',
           socket   = null,
-          s        = null, 
+          s        = null,
           mainElem = document.getElementById('main'),
           audio    = document.getElementById('audio'),
           clickEvt = window.ontouchend === null ? 'touchend' : 'click';
@@ -29,6 +29,10 @@
 
       s.on('connect', function(msg) {
           console.log('connected');
+      });
+
+      s.on('add', function(obj) {
+        console.log(obj);
       });
 
       s.on('musicsync', function(state) {
@@ -43,9 +47,10 @@
         resizeWindow();
       });
 
-    document.addEventListener(clickEvt, function() {
+    document.getElementById('btn').addEventListener(clickEvt, function() {
         console.log('btn tapped');
         s.emit('musicsync', 'on');
+        s.emit('add', 'push on');
     });
 
       function resizeWindow() {
