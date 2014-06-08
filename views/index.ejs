@@ -8,6 +8,8 @@
   <body id="body">
     <div id="main"></div>
     <a class="btn" href="javascript:void(0)">BTN</a>
+    <br>
+    <br>
     <audio id="audio" controls>
         <source src="./audio/sample.mp3" type="audio/mp3">
         このWebブラウザーは音声の再生に対応していません。
@@ -30,7 +32,9 @@
       });
 
       s.on('musicsync', function(state) {
+          console.log('sync');
           if (state === 'on') {
+            console.log('on');
             audio.play();
           }
       });
