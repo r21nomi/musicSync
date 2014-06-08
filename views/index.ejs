@@ -7,7 +7,7 @@
   </head>
   <body id="body">
     <div id="main"></div>
-    <div class="btn">btn</div>
+    <a class="btn" href="javascript:void(0)">BTN</a>
     <audio id="audio" controls>
         <source src="./audio/sample.mp3" type="audio/mp3">
         このWebブラウザーは音声の再生に対応していません。
@@ -15,8 +15,8 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
-      var socket = io.connect('http://myonlyherokuapp.herokuapp.com/'),
-//      var socket   = io.connect('http://localhost:3000/'),
+//      var socket = io.connect('http://myonlyherokuapp.herokuapp.com/'),
+      var socket   = io.connect('http://localhost:3000/'),
           s        = socket.of('/socket'),
           mainElem = document.getElementById('main'),
           audio    = document.getElementById('audio'),
