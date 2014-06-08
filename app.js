@@ -81,6 +81,7 @@ namespace.on('connection',function(socket) {
 
   socket.on('msync', function(state) {
     console.log(state);
+    console.log('state');
     namespace.emit('msync', state);
   });
 
