@@ -87,6 +87,7 @@ namespace.on('connection',function(socket) {
   });
 
   socket.on('musicsync', function(state) {
+    console.log(state);
     namespace.emit('musicsync', state);
   });
 });
